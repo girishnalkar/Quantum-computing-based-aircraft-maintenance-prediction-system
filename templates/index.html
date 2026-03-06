@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Aircraft Maintenance Prediction System</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+<!-- HERO SECTION -->
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="tag">⚛ QUANTUM-POWERED PREDICTION</div>
+
+<h1>
+Aircraft Maintenance <br>
+<span>Prediction System</span>
+</h1>
+
+<p>
+Harnessing quantum computing to revolutionize predictive maintenance —
+reducing downtime, cutting costs, and ensuring safer skies.
+</p>
+
+<div class="buttons">
+
+<button class="btn btn-primary" onclick="goPredict()">
+🔍 Explore System
+</button>
+
+<button class="btn btn-secondary" onclick="window.location.href='/report'">
+📊 View Audit Report
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CAPABILITIES -->
+
+<section class="section">
+
+<h2>Key Capabilities</h2>
+
+<p>
+A quantum-classical hybrid approach to next-generation aircraft maintenance prediction.
+</p>
+
+<div class="grid">
+
+<div class="card">
+<div class="icon">⚛</div>
+<h3>Quantum Algorithms</h3>
+<p>
+The core engine uses VQCs for complex pattern recognition in sensor data, surpassing classical limits in detecting early-stage compressor decay.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">📊</div>
+<h3>Safety assurance</h3>
+<p>
+Continuous monitoring ensures all predictions and maintenance actions comply with strict aviation safety standards.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">⏱</div>
+<h3>Reduced Downtime</h3>
+<p>
+By predicting failures early, the system keeps aircraft operational and on schedule, avoiding costly mid-flight emergencies.
+</p>
+</div>
+
+<div class="card">
+<div class="icon">🔧</div>
+<h3>Smart Scheduling</h3>
+<p>
+Uses intelligent quantum optimization to balance the cost of repairs with the necessity of safety, creating optimized maintenance windows.
+</p>
+</div>
+
+</div>
+
+</section>
+
+
+<!-- FOOTER -->
+
+<footer>
+
+<h3>⚛ QCAMP</h3>
+
+<p>
+Quantum Computing Based Aircraft Maintenance Prediction System
+</p>
+
+<p class="copyright">
+© 2026 Research Project. All rights reserved.
+</p>
+
+</footer>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

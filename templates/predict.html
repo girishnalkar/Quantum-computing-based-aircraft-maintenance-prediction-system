@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Engine Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <section class="hero small-hero">
+        <div class="hero-content">
+            <div class="tag">⚛ QUANTUM ENGINE ANALYSIS</div>
+            <h1>Aircraft Maintenance<br><span>Prediction System</span></h1>
+            <p>Enter aircraft engine sensor values to run the quantum predictive maintenance model.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>Enter Sensor Values</h2>
+        <p>Provide engine sensor data.</p>
+
+        <div class="predict-container">
+            <div class="predict-card">
+                <label>Aircraft Engine ID</label>
+                <input id="engine_id" type="text" placeholder="e.g. ENG-777" value="ENG-777">
+
+                <label>Sensor s11 (Physical Core Speed)</label>
+                <input id="s11" type="number" step="any" placeholder="Enter value">
+
+                <label>Sensor s12 (LPC Outlet Static Pressure)</label>
+                <input id="s12" type="number" step="any" placeholder="Enter value">
+
+                <label>Sensor s13 (LPC Total Temperature)</label>
+                <input id="s13" type="number" step="any" placeholder="Enter value">
+
+                <label>Sensor s15 (HPC Outlet Total Temperature)</label>
+                <input id="s15" type="number" step="any" placeholder="Enter value">
+
+                <button class="btn btn-primary" onclick="runPrediction()">
+                    ⚡ Run Quantum Prediction
+                </button>
+            </div>
+        </div>
+
+        <div id="result" class="result-box" style="display:none;">
+            <h2 id="res-status">Status</h2>
+            
+            <div class="ds-grid">
+                <div class="ds-item" style="border-left: 4px solid #fbbf24;">
+                    <span class="ds-label">Maintenance Priority (Binomial Heap)</span>
+                    <span id="res-priority" class="ds-value">-</span>
+                </div>
+
+                <div class="ds-item" style="border-left: 4px solid #60a5fa;">
+                    <span class="ds-label">Recommended Hangar (R-tree Search)</span>
+                    <span id="res-hangar" class="ds-value">-</span>
+                </div>
+
+                <div class="ds-item" style="border-left: 4px solid #a855f7;">
+                    <span class="ds-label">History Version (Persistent Log)</span>
+                    <span id="res-version" class="ds-value">-</span>
+                </div>
+
+                <div class="ds-item" style="border-left: 4px solid #10b981;">
+                    <span class="ds-label">Quantum Risk Score (VQC)</span>
+                    <span id="res-score" class="ds-value">-</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div style="margin-top: 40px; text-align: center;">
+            <button class="btn btn-secondary" onclick="window.location.href='/'">
+                🏠 Back to Home Page
+            </button>
+            <button class="btn btn-secondary" onclick="window.location.href='/report'" style="margin-left: 10px;">
+                📊 View Audit Report
+            </button>
+        </div>
+
+    <footer>
+        <h3>⚛ QCAMP</h3>
+        <p>Quantum Computing Based Aircraft Maintenance Prediction System</p>
+        <p class="copyright">© 2026 Research Project. All rights reserved.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
