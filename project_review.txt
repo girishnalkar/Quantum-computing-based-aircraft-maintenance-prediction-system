@@ -1,6 +1,0 @@
-Data structures used:
-1. Binomial Heap: Prioritizes high-risk engines for repair. Its $O(\log n)$ union time allows for merging maintenance logs from different fleets instantly.
-
-2. R-tree: Handles spatial dispatching. It searches geographic point data to find the nearest repair hangar (e.g., Pune or Mumbai) for a failing aircraft.
-
-3. Persistent Data Structure: Creates a "Digital Black Box" by storing versioned history (v1, v2, etc.) of sensor data for auditing and crash investigation.
