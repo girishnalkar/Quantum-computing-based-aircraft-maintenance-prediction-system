@@ -1,173 +1,76 @@
-✈️ QCAMP
-AI + Quantum Computing based Aircraft Maintenance Prediction System
-QCAMP is an intelligent aircraft engine monitoring system that predicts potential engine failures using Quantum Machine Learning and recommends the nearest maintenance hangar in real time.
+# ✈️ QCAMP: AI + Quantum Computing Aircraft Maintenance Prediction
 
-The system combines:
-Quantum Neural Network (Pennylane)
-Flask Web Application
-Spatial Search using R-Tree
-Maintenance Priority Queue
-Sensor Data Analysis
+**QCAMP** is an intelligent aircraft engine monitoring system that leverages **Quantum Machine Learning (QML)** to predict potential engine failures and recommend the nearest maintenance hangars in real-time.
 
-It simulates a next-generation aviation safety platform that airlines could use to monitor engines during flight and take preventive maintenance actions.
+By combining Quantum Neural Networks with spatial indexing and priority queuing, QCAMP simulates a next-generation aviation safety platform for preventive maintenance.
 
-🚀 Features
-🔮 Quantum Failure Prediction
-Uses a 4-qubit quantum neural network built with Pennylane to predict engine health based on sensor values.
+---
 
-📡 Real-Time Sensor Processing
-Accepts engine sensor inputs such as:
-S11
-S12
-S13
-S15
-and predicts failure probability.
+## 🚀 Key Features
 
-🛠 Maintenance Priority System
-Engines predicted with high risk are automatically pushed into a priority maintenance queue using a max-heap.
+* **🔮 Quantum Failure Prediction:** Uses a 4-qubit Variational Quantum Circuit (VQC) built with **PennyLane** to analyze engine health.
+* **📡 Real-Time Sensor Processing:** Processes critical sensor inputs (S11, S12, S13, S15) to calculate failure probabilities.
+* **🛠 Maintenance Priority System:** High-risk engines are automatically prioritized using a **Max-Heap** data structure.
+* **🗺 Smart Hangar Recommendation:** Utilizes **R-Tree spatial indexing** to find the nearest MRO (Maintenance, Repair, and Overhaul) facility.
+* **📜 Engine History Vault:** Tracks prediction history per Engine ID for long-term health monitoring.
 
-🗺 Smart Hangar Recommendation
-Uses R-Tree spatial indexing to find the nearest aircraft maintenance hangar.
+---
 
-Example hangars include:
-Pune International Airport
-Mumbai CSIA
-HAL Nashik
-Goa Dabolim Hangar
-Nagpur MIHAN MRO Facility
+## 🧠 System Architecture
 
-📜 Engine History Vault
-Stores prediction history for each engine ID to simulate predictive maintenance tracking.
+The system flows from raw sensor data to quantum inference, ending with actionable maintenance logistics:
 
-📊 Maintenance Report Dashboard
-Displays:
-Engine prediction history
-Maintenance priority queue
-Hangar recommendations
+1. **Data Input:** Sensor values & aircraft coordinates via Flask Web UI.
+2. **Preprocessing:** Data scaling using `Scikit-Learn`.
+3. **Quantum Inference:** 4-qubit QNode processes data through RY rotations and CNOT entanglement.
+4. **Decision Engine:** - ✅ **Healthy:** Continue flight monitoring.
+    - ⚠️ **High Risk:** Trigger Priority Queue + R-Tree Hangar Search.
 
-🧠 System Architecture
-Aircraft Sensors
-       │
-       ▼
-Sensor Data Input (Web UI)
-       │
-       ▼
-Data Scaling (Sklearn Scaler)
-       │
-       ▼
-Quantum Neural Network
-(Pennylane QNode)
-       │
-       ▼
-Failure Risk Score
-       │
-       ├── Healthy → Continue Flight
-       │
-       └── High Risk
-             │
-             ▼
-Maintenance Priority Queue
-             │
-             ▼
-Nearest Hangar Recommendation
-(R-Tree Spatial Search)
 
-🖥 Web Interface
-The application provides multiple pages:
 
-Home Page
-Landing page for the monitoring system.
+---
 
-Prediction Page
-User enters:
-Engine ID
-Sensor values
-Aircraft location
-The model predicts engine health instantly.
+## 🔬 Quantum Circuit Design
 
-Maintenance Report
-Displays:
-Engine prediction history
-Priority maintenance queue
-Recommended hangars
+The model utilizes a variational quantum circuit:
+* **State Preparation:** Input features encoded using **RY rotations**.
+* **Entanglement:** CNOT gates to create quantum correlations between sensors.
+* **Measurement:** Expectation value of **Pauli-Z** operators to determine the risk score.
 
-📂 Project Structure
-QCAM
-│
-├── app.py
-├── quantum_weights.pkl
-├── scaler.pkl
-│
-├── templates
+---
+
+## 🛠 Technologies Used
+
+| Category | Tools |
+| :--- | :--- |
+| **Backend** | Python, Flask, NumPy, Pickle |
+| **Quantum ML** | PennyLane, Quantum Neural Networks |
+| **Data Structures** | Max-Heap (Priority Queue), R-Tree (Spatial Index) |
+| **Frontend** | HTML5, CSS3, JavaScript |
+
+---
+
+## 📂 Project Structure
+
+QCAM/
+├── app.py                # Main Flask Application
+├── quantum_weights.pkl   # Trained QNN parameters
+├── scaler.pkl            # Saved Sklearn scaler
+├── templates/            # UI Components
 │   ├── index.html
 │   ├── predict.html
 │   └── report.html
-│
-├── static
-|   ├── images
-|        └── aircraft.jpeg
+├── static/               # Assets
 │   ├── style.css
 │   └── script.js
-│
 └── README.md
 
-#Note: preprocess.py, quantum_model.py and testing_script.py this files was used for training Quantum ML model
+## 📊 Example Output
+**Status:** ⚠️ High Failure Risk
+**Failure Score:** 0.74
+**Priority Rank:** 2
+**Recommended Hangar:** Mumbai CSIA Hangar
+**Processed Location:** [18.5204, 73.8567]
 
-⚙️ Technologies Used
-Backend:
-Python
-Flask
-NumPy
-Pickle
-
-Quantum Machine Learning:
-Pennylane
-Quantum Neural Networks
-
-Data Structures:
-Heap Queue (Priority Queue)
-R-Tree Spatial Index
-
-Frontend:
-HTML
-CSS
-JavaScript
-
-🔬 Quantum Circuit
-The model uses a 4-qubit variational quantum circuit:
-Input encoded using RY rotations
-Entanglement using CNOT gates
-Trainable parameters using Rot gates
-
-Output is measured using:
-Expectation value of Pauli-Z
-
-This value determines engine failure risk.
-
-📊 Example Prediction Output
-Status: ⚠ High Failure Risk
-Failure Score: 0.74
-Priority Rank: 2
-Recommended Hangar: Mumbai CSIA Hangar
-History Version: 5
-Processed Location: [18.5204, 73.8567]
-
-✈️ Real World Applications
-This system can be used in:
-Aircraft Predictive Maintenance
-Airline Fleet Monitoring
-Military Aviation Systems
-Smart Airports
-Autonomous Aircraft Diagnostics
-
-🔮 Future Improvements
-Real aircraft sensor dataset integration
-Deep Quantum Neural Networks
-Live aircraft tracking integration
-Dashboard visualization
-Cloud deployment
-Edge AI for aircraft systems
-
-👨‍💻 Author
-Girish Nalkar
-AI • Quantum Computing • Aviation Safety Systems
+## 👨‍💻 Author
+**Girish Nalkar** Specializing in AI, Quantum Computing, and Aviation Safety Systems.
