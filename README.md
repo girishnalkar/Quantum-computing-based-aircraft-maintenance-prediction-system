@@ -66,11 +66,11 @@ QCAM/
 └── README.md
 
 ## 📊 Example Output
-**Status:** ⚠️ High Failure Risk
-**Failure Score:** 0.74
-**Priority Rank:** 2
-**Recommended Hangar:** Mumbai CSIA Hangar
-**Processed Location:** [18.5204, 73.8567]
+* **Status:** ⚠️ High Failure Risk
+* **Failure Score:** 0.74
+* **Priority Rank:** 2
+* **Recommended Hangar:** Mumbai CSIA Hangar
+* **Processed Location:** [18.5204, 73.8567]
 
 ## 👨‍💻 Author
 **Girish Nalkar** Specializing in AI, Quantum Computing, and Aviation Safety Systems.
