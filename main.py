@@ -10,7 +10,7 @@ import google.generativeai as genai
 
 # ---------------- CONFIGURE AI AGENT ---------------- #
 # Set your Gemini API key here or in your environment variables
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCPipQTVq89PrgfXKlb_cUuXRF5tCGyKRc")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCdhmciJNcaLHHO4CN5So2ow9G-vSjJD9c")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
@@ -55,17 +55,17 @@ p = index.Property()
 idx = index.Index(properties=p)
 
 hangar_data = {
-    1: (28.5562, 77.1000, "Delhi Airport"),
-    2: (19.0896, 72.8656, "Mumbai Airport"),
-    3: (13.1986, 77.7066, "Bangalore Airport"),
-    4: (17.2403, 78.4294, "Hyderabad Airport"),
-    5: (22.6547, 88.4467, "Kolkata Airport"),
-    6: (13.0827, 80.2707, "Chennai Airport"),
-    7: (23.0726, 72.6347, "Ahmedabad Airport"),
-    8: (15.3808, 73.8314, "Goa Airport"),
-    9: (11.1368, 77.0420, "Coimbatore Airport"),
-    10: (8.4821, 76.9201, "Trivandrum Airport"),
-    11: (18.5821, 73.9197, "Pune Airport")
+    1: (28.5562, 77.1000, "Indira Gandhi International Airport (DEL)"),
+    2: (19.0896, 72.8656, "Chhatrapati Shivaji Maharaj International Airport (BOM)"),
+    3: (13.1986, 77.7066, "Kempegowda International Airport (BLR)"),
+    4: (17.2403, 78.4294, "Rajiv Gandhi International Airport (HYD)"),
+    5: (22.6547, 88.4467, "Netaji Subhas Chandra Bose International Airport (CCU)"),
+    6: (13.0827, 80.2707, "Chennai International Airport (MAA)"),
+    7: (23.0726, 72.6347, "Sardar Vallabhbhai Patel International Airport (AMD)"),
+    8: (15.3808, 73.8314, "Goa International Airport (GOI)"),
+    9: (11.1368, 77.0420, "Coimbatore International Airport (CJB)"),
+    10: (8.4821, 76.9201, "Trivandrum International Airport (TRV)"),
+    11: (18.5821, 73.9197, "Pune International Airport (PNQ)")
 }
 
 for h_id, (lat, lon, name) in hangar_data.items():
