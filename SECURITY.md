@@ -20,7 +20,7 @@ We take security seriously. If you discover a vulnerability in this project, ple
 
 ### 📩 How to Report
 
-* Email: **girishnalkar2006@gmail.com** *(replace with your email)*
+* Email: **girishnalkar2006@gmail.com** 
 * Subject line: `Security Vulnerability Report`
 * Include:
 
