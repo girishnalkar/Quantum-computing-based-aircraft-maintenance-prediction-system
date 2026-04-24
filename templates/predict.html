@@ -1,90 +1,162 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Quantum Engine Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  </head>
+  <body>
+    <!-- NAVBAR -->
+    <nav style="position: absolute; top: 0; left: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px;">
+            <span style="color: #00e5ff;">⚛</span> QCAMP
+        </div>
+        <div style="display: flex; gap: 30px;">
+            <a href="/" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='#fff'">Home</a>
+            <a href="/predict-page" style="color: #00e5ff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseout="this.style.color='#00e5ff'">Predict</a>
+            <a href="/report" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='#fff'">Audit Report</a>
+        </div>
+    </nav>
 
     <section class="hero small-hero">
-        <div class="hero-content">
-            <div class="tag">⚛ QUANTUM ENGINE ANALYSIS</div>
-            <h1>Aircraft Maintenance<br><span>Prediction System</span></h1>
-            <p>Enter aircraft engine sensor values to run the quantum predictive maintenance model.</p>
-        </div>
+      <div class="hero-content">
+        <div class="tag">⚛ QUANTUM ENGINE ANALYSIS</div>
+        <h1>Aircraft Maintenance<br /><span>Prediction System</span></h1>
+        <p>
+          Enter aircraft engine sensor values to run the quantum predictive
+          maintenance model.
+        </p>
+      </div>
     </section>
 
     <section class="section">
-        <h2>Enter Sensor Values</h2>
-        <p>Provide engine sensor data.</p>
+      <h2>Enter Sensor Values</h2>
+      <p>Provide engine sensor data.</p>
 
-        <div class="predict-container">
-            <div class="predict-card">
-                <label>Aircraft Engine ID</label>
-                <input id="engine_id" type="text" placeholder="e.g. ENG-777" value="ENG-777">
+      <div class="predict-container">
+        <div class="predict-card">
+          <label>Aircraft Engine ID</label>
+          <input
+            id="engine_id"
+            type="text"
+            placeholder="e.g. ENG-777"
+            value="ENG-777"
+          />
 
-                <label>Sensor s11 (Static pressure at HPC outlet(P30))</label>
-                <input id="s11" type="number" step="any" placeholder="Enter value">
+          <label>Sensor s11 (Static pressure at HPC outlet(P30))</label>
+          <input id="s11" type="number" step="any" placeholder="Enter value" />
 
-                <label>Sensor s12 (Ratio of Fuel Flow to P30(Ps30))</label>
-                <input id="s12" type="number" step="any" placeholder="Enter value">
+          <label>Sensor s12 (Ratio of Fuel Flow to P30(Ps30))</label>
+          <input id="s12" type="number" step="any" placeholder="Enter value" />
 
-                <label>Sensor s13 (Corrected Fan Speed)</label>
-                <input id="s13" type="number" step="any" placeholder="Enter value">
+          <label>Sensor s13 (Corrected Fan Speed)</label>
+          <input id="s13" type="number" step="any" placeholder="Enter value" />
 
-                <label>Sensor s15 (Bypass Ratio)</label>
-                <input id="s15" type="number" step="any" placeholder="Enter value">
+          <label>Sensor s15 (Bypass Ratio)</label>
+          <input id="s15" type="number" step="any" placeholder="Enter value" />
 
-                <button class="btn btn-primary" onclick="runPrediction()">
-                    ⚡ Run Quantum Prediction
-                </button>
-            </div>
+          <button class="btn btn-primary" onclick="runPrediction()">
+            ⚡ Run Quantum Prediction
+          </button>
         </div>
+      </div>
 
-        <div id="result" class="result-box" style="display:none;">
-            <h2 id="res-status">Status</h2>
-            
-            <div class="ds-grid">
-                <div class="ds-item" style="border-left: 4px solid #fbbf24;">
-                    <span class="ds-label">Maintenance Priority (Binomial Heap)</span>
-                    <span id="res-priority" class="ds-value">-</span>
-                </div>
+      <div id="result" class="result-box" style="display: none">
+        <h2 id="res-status">Status</h2>
 
-                <div class="ds-item" style="border-left: 4px solid #60a5fa;">
-                    <span class="ds-label">Recommended Hangar (R-tree Search)</span>
-                    <span id="res-hangar" class="ds-value">-</span>
-                </div>
+        <div class="ds-grid">
+          <div class="ds-item" style="border-left: 4px solid #fbbf24">
+            <span class="ds-label">Maintenance Priority (Binomial Heap)</span>
+            <span id="res-priority" class="ds-value">-</span>
+          </div>
 
-                <div class="ds-item" style="border-left: 4px solid #a855f7;">
-                    <span class="ds-label">History Version (Persistent Log)</span>
-                    <span id="res-version" class="ds-value">-</span>
-                </div>
+          <div class="ds-item" style="border-left: 4px solid #60a5fa">
+            <span class="ds-label">Recommended Hangar (R-tree Search)</span>
+            <span id="res-hangar" class="ds-value">-</span>
+          </div>
 
-                <div class="ds-item" style="border-left: 4px solid #10b981;">
-                    <span class="ds-label">Quantum Risk Score (VQC)</span>
-                    <span id="res-score" class="ds-value">-</span>
-                </div>
-            </div>
+          <div class="ds-item" style="border-left: 4px solid #a855f7">
+            <span class="ds-label">History Version (Persistent Log)</span>
+            <span id="res-version" class="ds-value">-</span>
+          </div>
+
+          <div class="ds-item" style="border-left: 4px solid #10b981">
+            <span class="ds-label">Quantum Risk Score (VQC)</span>
+            <span id="res-score" class="ds-value">-</span>
+          </div>
         </div>
+      </div>
     </section>
 
-    <div style="margin-top: 40px; text-align: center;">
-            <button class="btn btn-secondary" onclick="window.location.href='/'">
-                🏠 Back to Home Page
-            </button>
-            <button class="btn btn-secondary" onclick="window.location.href='/report'" style="margin-left: 10px;">
-                📊 View Audit Report
-            </button>
-        </div>
+    <h3 style="text-align: center; margin-top: 40px; margin-bottom: 20px;">Aircraft Live Map</h3>
+    <div id="map" style="height: 400px; width: 100%"></div>
+
+    <div style="margin-top: 40px; text-align: center">
+      <button class="btn btn-secondary" onclick="window.location.href = '/'">
+        🏠 Back to Home Page
+      </button>
+      <button
+        class="btn btn-secondary"
+        onclick="window.location.href = '/report'"
+        style="margin-left: 10px"
+      >
+        📊 View Audit Report
+      </button>
+    </div>
 
     <footer>
-        <h3>⚛ QCAMP</h3>
-        <p>Quantum Computing Based Aircraft Maintenance Prediction System</p>
-        <p class="copyright">© 2026 Research Project. All rights reserved.</p>
+      <h3>⚛ QCAMP</h3>
+      <p>Quantum Computing Based Aircraft Maintenance Prediction System</p>
+      <p class="copyright">© 2026 Research Project. All rights reserved.</p>
     </footer>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      var map = L.map("map").setView([18.5204, 73.8567], 7);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: "© OpenStreetMap",
+      }).addTo(map);
+
+      var aircraftMarker, hangarMarker, routeLine;
+
+      function updateMap(lat, lon, hangarLat, hangarLon) {
+        // ❌ Remove old markers (prevents duplication)
+        if (aircraftMarker) map.removeLayer(aircraftMarker);
+        if (hangarMarker) map.removeLayer(hangarMarker);
+        if (routeLine) map.removeLayer(routeLine);
+
+        // ✈ Aircraft marker
+        aircraftMarker = L.marker([lat, lon])
+          .addTo(map)
+          .bindPopup("✈ Aircraft")
+          .openPopup();
+
+        // 🛠 Hangar marker (only if exists)
+        if (hangarLat && hangarLon) {
+          hangarMarker = L.marker([hangarLat, hangarLon])
+            .addTo(map)
+            .bindPopup("🛠 Hangar");
+
+          // 📏 Route line
+          routeLine = L.polyline([
+            [lat, lon],
+            [hangarLat, hangarLon],
+          ]).addTo(map);
+
+          // 🔍 Auto zoom
+          map.fitBounds([
+            [lat, lon],
+            [hangarLat, hangarLon],
+          ]);
+        }
+      }
+    </script>
+  </body>
 </html>

@@ -13,6 +13,18 @@
     </style>
 </head>
 <body>
+    <!-- NAVBAR -->
+    <nav style="position: absolute; top: 0; left: 0; width: 100%; padding: 25px 50px; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
+        <div style="font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 800; color: #fff; letter-spacing: 1px;">
+            <span style="color: #00e5ff;">⚛</span> QCAMP
+        </div>
+        <div style="display: flex; gap: 30px;">
+            <a href="/" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='#fff'">Home</a>
+            <a href="/predict-page" style="color: #fff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseover="this.style.color='#00e5ff'" onmouseout="this.style.color='#fff'">Predict</a>
+            <a href="/report" style="color: #00e5ff; text-decoration: none; font-weight: 600; font-size: 15px; transition: 0.3s;" onmouseout="this.style.color='#00e5ff'">Audit Report</a>
+        </div>
+    </nav>
+
     <section class="hero small-hero">
         <h1>Maintenance <span>Audit Report</span></h1>
     </section>
@@ -55,10 +67,10 @@
                 {% for v in versions %}
                 <tr>
                     <td><span class="version-tag">v{{ loop.index }}</span></td>
-                    <td>{{ v[0][0] }}</td>
-                    <td>{{ v[0][1] }}</td>
-                    <td>{{ v[0][2] }}</td>
-                    <td>{{ v[0][3] }}</td>
+                    <td>{{ v[0] }}</td>
+                    <td>{{ v[1] }}</td>
+                    <td>{{ v[2] }}</td>
+                    <td>{{ v[3] }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
