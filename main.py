@@ -9,7 +9,6 @@ from tensorflow.keras.models import load_model
 import google.generativeai as genai
 
 # ---------------- CONFIGURE AI AGENT ---------------- #
-# Set your Gemini API key here or in your environment variables
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "#add your own GEMINI API KEY here")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
@@ -189,8 +188,7 @@ def predict():
             future_status = "🟡 Future Moderate Risk"
         else:
             future_status = "✅ Future Healthy"
-
-        # Enforce Rule: If currently High Risk, future must remain High Risk
+            
         if score > 0.35:
             future_status = "⚠ Future Failure Risk"
             if future_health >= 0.3:
@@ -259,7 +257,6 @@ def predict():
 
 @app.route("/report")
 def report_page():
-    # Sort queue ascending by score (lowest negative = highest anomaly)
     sorted_queue = sorted(maintenance_queue, key=lambda x: x[0])
 
     return render_template("report.html",
