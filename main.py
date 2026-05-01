@@ -10,7 +10,7 @@ import google.generativeai as genai
 
 # ---------------- CONFIGURE AI AGENT ---------------- #
 # Set your Gemini API key here or in your environment variables
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyDp4oNTHASTT04AnQW0ltt3TmkH6BrmtI0")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "#add your own API key")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
