@@ -2,14 +2,15 @@ from flask import Flask, render_template, request, jsonify
 import pickle
 import numpy as np
 import pennylane as qml
-import heapq
 import os
 from rtree import index
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import Dense, LSTM
 import google.generativeai as genai
 
 # ---------------- CONFIGURE AI AGENT ---------------- #
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "#add your own GEMINI API KEY here")
+# Set your Gemini API key here or in your environment variables
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyDp4oNTHASTT04AnQW0ltt3TmkH6BrmtI0")
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
 
@@ -17,7 +18,7 @@ app = Flask(__name__)
 
 # ---------------- GLOBAL STORAGE ---------------- #
 
-maintenance_queue = []
+engine_scores = {}  # Replaced maintenance_queue list with dict for O(N) ranking
 history_vault = {}
 score_history = {}
 
@@ -29,7 +30,21 @@ with open("models/quantum_weights.pkl", "rb") as f:
 with open("models/scaler.pkl", "rb") as f:
     scaler = pickle.load(f)
 
-future_model = load_model("models/future_model.keras")
+# --- Workaround for Keras 3 to Keras 2 Backward Compatibility ---
+_original_dense_init = Dense.__init__
+def _patched_dense_init(self, *args, **kwargs):
+    kwargs.pop('quantization_config', None)
+    _original_dense_init(self, *args, **kwargs)
+Dense.__init__ = _patched_dense_init
+
+_original_lstm_init = LSTM.__init__
+def _patched_lstm_init(self, *args, **kwargs):
+    kwargs.pop('quantization_config', None)
+    _original_lstm_init(self, *args, **kwargs)
+LSTM.__init__ = _patched_lstm_init
+# ----------------------------------------------------------------
+
+future_model = load_model("models/future_score_model.keras")
 
 # ---------------- QUANTUM DEVICE ---------------- #
 
@@ -105,14 +120,14 @@ def get_trend(engine_id):
         return "Stable"
 
 
-def get_sequence(engine_id, window=10):
+def get_sequence(engine_id, window=3):
     data = history_vault.get(engine_id, [])
 
     if len(data) < 3:
         return None
 
     recent_data = data[-window:]
-    # Pad with the oldest available data point if we have less than 10
+    # Pad with the oldest available data point if we have less than 3
     while len(recent_data) < window:
         recent_data.insert(0, recent_data[0])
 
@@ -133,7 +148,7 @@ def predict_page():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    global maintenance_queue
+    global engine_scores
 
     data = request.json
 
@@ -188,21 +203,24 @@ def predict():
             future_status = "🟡 Future Moderate Risk"
         else:
             future_status = "✅ Future Healthy"
-            
+        # Enforce Rule: Engines cannot magically heal over time
         if score > 0.35:
             future_status = "⚠ Future Failure Risk"
             if future_health >= 0.3:
                 future_health = min(future_health, 0.29)
+        elif score > -0.1:
+            if future_status == "✅ Future Healthy":
+                future_status = "🟡 Future Moderate Risk"
+                if future_health >= 0.6:
+                    future_health = min(future_health, 0.59)
 
-    # -------- PRIORITY QUEUE -------- #
-    maintenance_queue[:] = [item for item in maintenance_queue if item[1] != engine_id]
-    heapq.heapify(maintenance_queue)
+    # -------- PRIORITY RANKING -------- #
+    engine_scores[engine_id] = score
 
-    heapq.heappush(maintenance_queue, (-score, engine_id))
-
-    sorted_queue = sorted(maintenance_queue)
-    engine_ids = [eid for _, eid in sorted_queue]
-    rank = engine_ids.index(engine_id) + 1
+    # Calculate rank in O(N) time instead of O(N log N)
+    # Rank is determined by how many engines have a higher risk score
+    # In case of tie, we fall back to alphabetical engine_id comparison to be stable
+    rank = sum(1 for eid, s in engine_scores.items() if s > score or (s == score and eid < engine_id)) + 1
 
     # -------- NEAREST AIRPORT -------- #
     nearest = list(idx.nearest((curr_lat, curr_lon, curr_lat, curr_lon), 1))
@@ -257,7 +275,9 @@ def predict():
 
 @app.route("/report")
 def report_page():
-    sorted_queue = sorted(maintenance_queue, key=lambda x: x[0])
+    # Sort descending by risk score (highest risk first)
+    # Keeping the (-score, engine_id) tuple format for template compatibility
+    sorted_queue = sorted([(-s, eid) for eid, s in engine_scores.items()])
 
     return render_template("report.html",
                            history=history_vault,

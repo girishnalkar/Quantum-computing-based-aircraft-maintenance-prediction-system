@@ -1,0 +1,79 @@
+Aircraft Engine Health Prediction Algorithm
+
+1. Start
+
+2. Input
+Read engine ID, location, and sensor values
+
+3. Store Data
+Save sensor values in history_vault
+
+4. Preprocess
+Normalize data using scaler
+
+5. Current Prediction
+Pass input through quantum circuit
+Get score and apply smoothing
+
+6. Determine Current Status
+Classify as High / Moderate / Healthy
+
+7. Future Prediction
+Take last 3 values (sliding window)
+Predict using LSTM model
+Apply smoothing
+Adjust future status based on rules
+
+8. Trend Detection
+Compare last 3 scores → Increasing / Decreasing / Stable
+
+9. Priority Ranking
+Store score in engine_scores
+Rank = number of engines with higher score + 1
+
+10. Nearest Hangar
+Use R-tree to find closest airport
+
+11. AI Decision
+Generate decision using Gemini AI
+
+12. Output
+Return status, score, trend, future result, rank, hangar, decision
+
+13. End
+
+Overall Time Complexity: O(n)
+Overall Space Complexity: O(n)
+
+R-Tree Algorithm
+
+1. Start
+
+2. Initialize
+Create R-tree index
+
+3. Insert Data
+For each location:
+	Insert (lat, lon, lat, lon)
+
+4. Input Query
+Take current location (lat, lon)
+
+5. Search
+Start from root
+Select nearest bounding rectangles
+Move to child nodes
+Skip far nodes (pruning)
+
+6. Leaf Node
+Compare actual distances
+
+7. Select Result
+Return nearest location
+
+8. End
+
+Overall Time Complexity: O(logn)
+Overall Space Complexity: O(n)
+
+R-Tree is used to efficiently find the nearest airport (hangar) based on engine location.
