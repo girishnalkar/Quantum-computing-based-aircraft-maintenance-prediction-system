@@ -4,6 +4,9 @@ import numpy as np
 import pennylane as qml
 import os
 from rtree import index
+import itertools
+from collections import deque
+import heapq
 from tensorflow.keras.models import load_model
 from tensorflow.keras.layers import Dense, LSTM
 import google.generativeai as genai
@@ -16,9 +19,79 @@ if GEMINI_API_KEY:
 
 app = Flask(__name__)
 
+# ---------------- ADVANCED DATA STRUCTURES ---------------- #
+
+class MaxHeap:
+    """A priority queue that guarantees O(log N) access to the maximum element."""
+    def __init__(self):
+        self.heap = []
+    
+    def push(self, score, item_id):
+        # Invert score to simulate Max-Heap using Python's Min-Heap
+        heapq.heappush(self.heap, (-score, item_id))
+        
+    def pop(self):
+        if self.heap:
+            score, item_id = heapq.heappop(self.heap)
+            return item_id, -score
+        return None, None
+        
+    def __len__(self):
+        return len(self.heap)
+
+
+class DoubleEndedPriorityQueue:
+    """
+    A Double-Ended Priority Queue (DEPQ) that allows O(log N) extraction 
+    of BOTH the maximum (highest risk) and minimum (healthiest) elements.
+    Uses lazy-deletion via shared mutable state to keep heaps synchronized.
+    """
+    def __init__(self):
+        self.min_heap = []
+        self.max_heap = []
+        self.entry_finder = {}
+        self.counter = itertools.count()
+
+    def update(self, item_id, score):
+        # Mark existing entry as removed (lazy deletion)
+        if item_id in self.entry_finder:
+            self.entry_finder[item_id][0] = False
+            
+        count = next(self.counter)
+        is_active = [True] # Shared mutable flag
+        
+        # Min-Heap entry
+        heapq.heappush(self.min_heap, [score, count, item_id, is_active])
+        # Max-Heap entry
+        heapq.heappush(self.max_heap, [-score, count, item_id, is_active])
+        
+        self.entry_finder[item_id] = is_active
+
+    def _clean_max_heap(self):
+        while self.max_heap and not self.max_heap[0][3][0]:
+            heapq.heappop(self.max_heap)
+            
+    def get_max(self):
+        self._clean_max_heap()
+        if self.max_heap:
+            return self.max_heap[0][2], -self.max_heap[0][0]
+        return None, None
+        
+    def _clean_min_heap(self):
+        while self.min_heap and not self.min_heap[0][3][0]:
+            heapq.heappop(self.min_heap)
+            
+    def get_min(self):
+        self._clean_min_heap()
+        if self.min_heap:
+            return self.min_heap[0][2], self.min_heap[0][0]
+        return None, None
+
+
 # ---------------- GLOBAL STORAGE ---------------- #
 
 engine_scores = {}  # Replaced maintenance_queue list with dict for O(N) ranking
+global_depq = DoubleEndedPriorityQueue()  # O(log N) min/max tracking
 history_vault = {}
 score_history = {}
 
@@ -89,7 +162,8 @@ for h_id, (lat, lon, name) in hangar_data.items():
 
 def smooth_score(engine_id, new_score, alpha=0.6):
     if engine_id not in score_history:
-        score_history[engine_id] = []
+        # Deque provides O(1) time complexity for appending and automatically removes oldest entries
+        score_history[engine_id] = deque(maxlen=10)
 
     hist = score_history[engine_id]
 
@@ -99,9 +173,6 @@ def smooth_score(engine_id, new_score, alpha=0.6):
         smoothed = alpha * new_score + (1 - alpha) * hist[-1]
 
     hist.append(smoothed)
-
-    if len(hist) > 10:
-        hist.pop(0)
 
     return smoothed
 
@@ -126,7 +197,8 @@ def get_sequence(engine_id, window=3):
     if len(data) < 3:
         return None
 
-    recent_data = data[-window:]
+    # Convert deque to list to allow slicing
+    recent_data = list(data)[-window:]
     # Pad with the oldest available data point if we have less than 3
     while len(recent_data) < window:
         recent_data.insert(0, recent_data[0])
@@ -153,20 +225,28 @@ def predict():
     data = request.json
 
     engine_id = data.get("engine_id", "ENG-1")
-    curr_lat = float(data.get("lat", 18.5204))
-    curr_lon = float(data.get("lon", 73.8567))
+    
+    try:
+        curr_lat = float(data.get("lat") if data.get("lat") is not None else 18.5204)
+        curr_lon = float(data.get("lon") if data.get("lon") is not None else 73.8567)
+    except (ValueError, TypeError):
+        curr_lat, curr_lon = 18.5204, 73.8567
 
-    # ✅ REAL VALUES INPUT
-    sensors = np.array([[
-        float(data["s11"]),
-        float(data["s12"]),
-        float(data["s13"]),
-        float(data["s15"])
-    ]])
+    # ✅ SAFE REAL VALUES INPUT (Handles empty strings from frontend)
+    try:
+        sensors = np.array([[
+            float(data.get("s11") if data.get("s11") else 0.0),
+            float(data.get("s12") if data.get("s12") else 0.0),
+            float(data.get("s13") if data.get("s13") else 0.0),
+            float(data.get("s15") if data.get("s15") else 0.0)
+        ]])
+    except (ValueError, TypeError):
+        sensors = np.array([[0.0, 0.0, 0.0, 0.0]])
 
     # -------- STORE HISTORY -------- #
     if engine_id not in history_vault:
-        history_vault[engine_id] = []
+        # Prevent memory leaks over time; bounds history to last 50 entries
+        history_vault[engine_id] = deque(maxlen=50)
 
     history_vault[engine_id].append(sensors[0].tolist())
 
@@ -195,6 +275,7 @@ def predict():
         seq_scaled = scaler.transform(sequence.reshape(-1, 4)).reshape(1, window, 4)
 
         future_raw = float(future_model.predict(seq_scaled, verbose=0)[0][0])
+        
         future_health = smooth_score(engine_id + "_future", future_raw)
 
         if future_health < 0.3:
@@ -216,6 +297,10 @@ def predict():
 
     # -------- PRIORITY RANKING -------- #
     engine_scores[engine_id] = score
+    global_depq.update(engine_id, score)
+
+    depq_max_eid, depq_max_score = global_depq.get_max()
+    depq_min_eid, depq_min_score = global_depq.get_min()
 
     # Calculate rank in O(N) time instead of O(N log N)
     # Rank is determined by how many engines have a higher risk score
@@ -268,20 +353,42 @@ def predict():
         "hangar": hangar_name,
         "processed_at": [curr_lat, curr_lon],
         "history_version": len(history_vault[engine_id]),
-        "hangar_coords": [hangar_lat, hangar_lon]
+        "hangar_coords": [hangar_lat, hangar_lon],
+        
+        "depq_max_engine": depq_max_eid,
+        "depq_max_score": round(depq_max_score, 4) if depq_max_score is not None else None,
+        "depq_min_engine": depq_min_eid,
+        "depq_min_score": round(depq_min_score, 4) if depq_min_score is not None else None
     })
 
 # ---------------- REPORT ---------------- #
 
 @app.route("/report")
 def report_page():
-    # Sort descending by risk score (highest risk first)
-    # Keeping the (-score, engine_id) tuple format for template compatibility
-    sorted_queue = sorted([(-s, eid) for eid, s in engine_scores.items()])
+    # Priority Queue (Max-Heap) implementation using our formal MaxHeap class
+    max_heap = MaxHeap()
+    for eid, s in engine_scores.items():
+        max_heap.push(s, eid)
+        
+    # Extracting items from heap maintains priority queue behavior
+    sorted_queue = []
+    while len(max_heap) > 0:
+        eid, s = max_heap.pop()
+        sorted_queue.append((-s, eid)) # Keep tuple format for template compatibility
+
+    depq_max_eid, depq_max_score = global_depq.get_max()
+    depq_min_eid, depq_min_score = global_depq.get_min()
+    
+    # Convert deques to lists for JSON serialization in the template graph
+    score_hist_lists = {eid: list(hist) for eid, hist in score_history.items()}
 
     return render_template("report.html",
                            history=history_vault,
-                           queue=sorted_queue)
+                           queue=sorted_queue,
+                           depq_max=(depq_max_eid, depq_max_score),
+                           depq_min=(depq_min_eid, depq_min_score),
+                           score_history=score_hist_lists,
+                           engine_scores=engine_scores)
 
 # ---------------- RUN ---------------- #
 

@@ -1,76 +1,80 @@
-# ✈️ QCAMP: AI + Quantum Computing Aircraft Maintenance Prediction
+# ✈️ QCAMP: Quantum-Based Aircraft Maintenance Prediction System
 
-**QCAMP** is an intelligent aircraft engine monitoring system that leverages **Quantum Machine Learning (QML)** to predict potential engine failures and recommend the nearest maintenance hangars in real-time.
+**QCAMP** is an advanced, intelligent aircraft engine monitoring system that merges **Quantum Machine Learning (QML)**, **Long Short-Term Memory (LSTM) Networks**, and **Generative AI** to provide state-of-the-art predictive maintenance telemetry.
 
-By combining Quantum Neural Networks with spatial indexing and priority queuing, QCAMP simulates a next-generation aviation safety platform for preventive maintenance.
+Built with a stunning, high-contrast "Quantum-Cyberpunk" aesthetic, the system provides real-time failure prediction, trend analysis, and intelligent logistics handling using strictly optimized spatial indexing and priority queueing structures.
 
 ---
 
 ## 🚀 Key Features
 
-* **🔮 Quantum Failure Prediction:** Uses a 4-qubit Variational Quantum Circuit (VQC) built with **PennyLane** to analyze engine health.
-* **📡 Real-Time Sensor Processing:** Processes critical sensor inputs (S11, S12, S13, S15) to calculate failure probabilities.
-* **🛠 Maintenance Priority System:** High-risk engines are automatically prioritized using a **Max-Heap** data structure.
-* **🗺 Smart Hangar Recommendation:** Utilizes **R-Tree spatial indexing** to find the nearest MRO (Maintenance, Repair, and Overhaul) facility.
-* **📜 Engine History Vault:** Tracks prediction history per Engine ID for long-term health monitoring.
+* **🔮 Quantum Risk Prediction:** Uses a 4-qubit Variational Quantum Circuit (VQC) built with **PennyLane** to extract non-linear risk signatures from live engine telemetry.
+* **⏳ LSTM Future Health Prognosis:** Implements a sliding-window Keras LSTM to analyze time-series degradation and predict future engine health states.
+* **🧠 AI Agent Decision Engine:** Integrates **Google Gemini AI 2.5** to generate authoritative, context-aware operational directives based on complex multi-model engine states.
+* **⚡ $O(1)$ Fleet Criticality Tracking:** A custom **Double-Ended Priority Queue (DEPQ)** built over dual Min/Max Heaps ensures $O(1)$ lookup for the healthiest and most at-risk engines.
+* **🗺️ Instant Hangar Logistics:** Utilizes **R-Tree spatial indexing** to instantly locate the nearest global MRO (Maintenance, Repair, and Overhaul) facility in $O(\log N)$ time.
+* **📈 Real-Time Interactive Telemetry:** Employs **Chart.js** to dynamically render Fleet Quantum Timelines and sleek Horizontal "Health Bar" visualizations.
 
 ---
 
-## 🧠 System Architecture
+## 🛠️ Data Structures & Architecture
 
-The system flows from raw sensor data to quantum inference, ending with actionable maintenance logistics:
-
-1. **Data Input:** Sensor values & aircraft coordinates via Flask Web UI.
-2. **Preprocessing:** Data scaling using `Scikit-Learn`.
-3. **Quantum Inference:** 4-qubit QNode processes data through RY rotations and CNOT entanglement.
-4. **Decision Engine:** - ✅ **Healthy:** Continue flight monitoring.
-    - ⚠️ **High Risk:** Trigger Priority Queue + R-Tree Hangar Search.
-
-
+QCAMP is heavily optimized to run in real-time under high simulation loads:
+* **R-Tree Index:** Instantly prunes coordinate distances to find nearby hangars without scanning the globe.
+* **DEPQ (Min/Max Heaps):** Utilizes lazy-deletion heaps to track fleet extremes.
+* **Collections Deque:** Maintains fixed sliding windows ($O(1)$ operations) for both the LSTM input stream and the UI rendering history.
+* **Hash Maps:** Enforces constant-time $O(1)$ telemetry lookups by Engine ID.
 
 ---
 
-## 🔬 Quantum Circuit Design
-
-The model utilizes a variational quantum circuit:
-* **State Preparation:** Input features encoded using **RY rotations**.
-* **Entanglement:** CNOT gates to create quantum correlations between sensors.
-* **Measurement:** Expectation value of **Pauli-Z** operators to determine the risk score.
-
----
-
-## 🛠 Technologies Used
+## ⚙️ Technologies Used
 
 | Category | Tools |
 | :--- | :--- |
-| **Backend** | Python, Flask, NumPy, Pickle |
-| **Quantum ML** | PennyLane, Quantum Neural Networks |
-| **Data Structures** | Max-Heap (Priority Queue), R-Tree (Spatial Index) |
-| **Frontend** | HTML5, CSS3, JavaScript |
+| **Backend** | Python, Flask, NumPy, Scikit-Learn |
+| **Quantum & ML** | PennyLane (QNN), TensorFlow (Keras LSTM) |
+| **Generative AI** | Google Gemini SDK |
+| **Data Structures** | R-Tree, Double-Ended Priority Queue, Deque |
+| **Frontend UI** | HTML5, CSS3 (Glassmorphism), JavaScript |
+| **Data Visualization** | Chart.js |
 
 ---
 
 ## 📂 Project Structure
 
-QCAM/
-├── app.py                # Main Flask Application
-├── quantum_weights.pkl   # Trained QNN parameters
-├── scaler.pkl            # Saved Sklearn scaler
-├── templates/            # UI Components
-│   ├── index.html
-│   ├── predict.html
-│   └── report.html
-├── static/               # Assets
-│   ├── style.css
-│   └── script.js
+```text
+QCAMP/
+├── main.py                  # Main Flask Backend Server
+├── models/                  # ML Models & Weights
+│   ├── future_score_model.keras  # Trained LSTM Model
+│   └── scaler.pkl                # Data Normalizer
+├── quantum_files/           # QNN Weights
+├── templates/               # UI Dashboard Components
+│   ├── index.html           # Landing Page
+│   ├── predict.html         # Form Input
+│   └── report.html          # Visual Analytics Dashboard
+├── static/                  # Assets
+│   ├── style.css            # Cyberpunk Design Tokens
+│   └── script.js            # Frontend Logic & Charting
 └── README.md
+```
 
-## 📊 Example Output
-* **Status:** ⚠️ High Failure Risk
-* **Failure Score:** 0.74
-* **Priority Rank:** 2
-* **Recommended Hangar:** Mumbai CSIA Hangar
-* **Processed Location:** [18.5204, 73.8567]
+---
+
+## 🔑 Installation & Environment
+
+Before running the local Flask server, ensure you configure your Generative AI Key. The system will look for this key to dynamically render the AI Decision blocks.
+
+```bash
+# Windows (PowerShell)
+$env:GEMINI_API_KEY="your_api_key_here"
+
+# Linux / Mac
+export GEMINI_API_KEY="your_api_key_here"
+
+# Run the server
+python main.py
+```
 
 ## 👨‍💻 Author
 **Girish Nalkar** Specializing in AI, Quantum Computing, and Aviation Safety Systems.

@@ -107,6 +107,17 @@ function executePrediction(lat, lon) {
                     ${data.future_health !== null && data.future_health !== undefined ? 
                         `<div class="progress-bar-bg"><div class="progress-bar-fill" style="width: ${futurePercent}%; background: ${getScoreColor(data.future_health, false)}"></div></div>` : ''}
                 </div>
+                
+                <div class="ds-card animate-up" style="animation-delay: 0.7s; border-left: 3px solid #ff4d4d; background: rgba(255, 77, 77, 0.05);">
+                    <small>Fleet Most Critical (DEPQ)</small>
+                    <span style="font-size: 16px; margin-top: 5px; color: white; display: block;">${data.depq_max_engine ? data.depq_max_engine : 'N/A'}</span>
+                    <span style="font-size: 13px; color: #ff4d4d;">Score: ${data.depq_max_score !== null ? data.depq_max_score.toFixed(4) : '-'}</span>
+                </div>
+                <div class="ds-card animate-up" style="animation-delay: 0.8s; border-left: 3px solid #00cfd5; background: rgba(0, 207, 213, 0.05);">
+                    <small>Fleet Healthiest (DEPQ)</small>
+                    <span style="font-size: 16px; margin-top: 5px; color: white; display: block;">${data.depq_min_engine ? data.depq_min_engine : 'N/A'}</span>
+                    <span style="font-size: 13px; color: #00cfd5;">Score: ${data.depq_min_score !== null ? data.depq_min_score.toFixed(4) : '-'}</span>
+                </div>
             </div>
             <p class="animate-fade" style="font-size: 12px; margin-top: 15px; color: #94a3b8; animation-delay: 0.8s;">
                 Analyzing from: ${lat.toFixed(4)}, ${lon.toFixed(4)}
