@@ -33,9 +33,9 @@ QCAMP is heavily optimized to run in real-time under high simulation loads:
 | :--- | :--- |
 | **Backend** | Python, Flask, NumPy, Scikit-Learn |
 | **Quantum & ML** | PennyLane (QNN), TensorFlow (Keras LSTM) |
-| **Generative AI** | Google Gemini SDK |
+| **Generative AI** | Google Gemini Flash-2.5 |
 | **Data Structures** | R-Tree, Double-Ended Priority Queue, Deque |
-| **Frontend UI** | HTML5, CSS3 (Glassmorphism), JavaScript |
+| **Frontend UI** | HTML5, CSS3 , JavaScript |
 | **Data Visualization** | Chart.js |
 
 ---
